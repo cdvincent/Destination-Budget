@@ -16,8 +16,7 @@ import API from "./utils/API";
 class App extends Component {
 
   state = {
-    //change back to false
-    authorized: true
+    authorized: false
   };
 
   componentDidMount() {
@@ -28,16 +27,28 @@ class App extends Component {
     API.isAuthorized()
     .then(res => {
       if (res.data.message) {
-        this.setState({ authorized: true });
+        this.setState({ authorized: false });
       } else {
         this.setState({ authorized: true });
       };
     })
   .catch(err => {
     console.log(err);
-    this.setState({ authorized: true });
+    this.setState({ authorized: false });
   });
-}
+};
+
+  logout = () => {
+    API.logout()
+      .then(res => {
+        console.log("logged out");
+        this.isAuthorized();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <Router>
@@ -45,14 +56,14 @@ class App extends Component {
           <Switch>
             <Route exact path="/">
               {this.state.authorized ? (
-                <Home logout={this.logout} />
+                <Redirect to="/user" />
               ) : (
-                <Redirect to="/login" />
+                <Home />
               )}
             </Route>
             <Route exact path="/login">
               {this.state.authorized ? (
-                <Redirect to="/" />
+                <Redirect to="/search" />
               ) : (
                 <Login 
                 isAuthorized={this.isAuthorized} />
@@ -60,25 +71,31 @@ class App extends Component {
             </Route>
             <Route exact path="/register">
               {this.state.authorized ? (
-                <Redirect to="/" />
+                <Redirect to="/search" />
               ) : (
                 <Register 
                 isAuthorized={this.isAuthorized} />
               )}
             </Route>
-            {/* CHECK ROUTES */}
             <Route exact path="/user">
               {this.state.authorized ? (
                 <User logout={this.logout} />
               ) : (
-                <Redirect to="/login" />
+                <Redirect to="/" />
               )}
             </Route>
-            <Route exact path="/search">
+            <Route exact path="/search" component={Search}>
               {this.state.authorized ? (
                 <Search logout={this.logout} />
               ) : (
-                <Redirect to="/login" />
+                <Route exact path="/search" component={Search}/>
+              )}
+            </Route>
+            <Route exact path="/budget">
+              {this.state.authorized ? (
+                <User logout={this.logout} />
+              ) : (
+                <Redirect to="/" />
               )}
             </Route>
             <Route>

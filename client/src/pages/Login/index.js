@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { FormGroup, Input, Label, Small, FormBtn } from "../../components/Form/Form";
-import { Container } from "../../components/Grid/Grid";
 import API from "../../utils/API";
 import "./style.css";
 
@@ -19,22 +18,18 @@ class Login extends Component {
       password: this.state.password
     })
       .then(res => {
-        if (res.status && res.status === 200 && !res.data.errors) {
+        if (res.data.message) {
+          this.setState({
+            error: res.data.message
+          });
+        } else {
           console.log("login successful")
           this.props.isAuthorized();
-        } else {
-          this.setState({
-            error: "A server error has occured."
-          });
         }
       })
       .catch(err => {
         console.log(err);
-        if (err.response.data === "Unauthorized") {
-          this.setState({ error: "Username or password incorrect!" });
-        } else {
-          this.setState({error: "A server error has occured."});
-        };
+        this.setState({ error: "A server error has occured." });
       });
 
     this.setState({ password: "" });
@@ -49,9 +44,7 @@ class Login extends Component {
 
   render() {
     return (
-      <Container
-        classes="loginContainer"
-      >
+      <div className="container loginContainer">
         <form>
           <FormGroup>
             <Label text="Username" />
@@ -82,7 +75,7 @@ class Login extends Component {
           />
           <Link to="/register">Not registered? Click here.</Link>
         </form>
-      </Container>
+      </div>
     );
   }
 }

@@ -1,38 +1,13 @@
-var bcrypt = require("bcrypt-nodejs");
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
 
-const db = require("../models");
+const User = require("../models/user");
 
-    passport.use(new LocalStrategy(
-        {
-            usernameField: "username",
-        },
-        function(username, password, done) {
-            db.User.findOne({
-                where: {
-                    username: username
-                }
-            }).then(function(user) {
-                if (!user) {
-                    return done(null, false, { message: "Username does not exist"
-                });
-            } else if (!user.validPassword(password)) {
-                return done(null, false, {
-                    message: "Incorrect password"
-                });
-            };
-            return done(null, user);
-        });
-    }
-));
+// CHANGE: USE "createStrategy" INSTEAD OF "authenticate"
+passport.use(new LocalStrategy(User.authenticate()));
 
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-  });
-  
-  passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
-  });
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-  module.exports = passport;
+// Exporting our configured passport
+module.exports = passport;
