@@ -8,8 +8,9 @@ function CityResults(props) {
         <ul className="list-group search-results">
         {props.fromResults.map(result => (
             <li key={result.PlaceId} className="list-group-item">
-            <p>City: {result.PlaceName}</p>
-            <p>State: {result.RegionId}</p>
+            <p>Airport Name: {result.PlaceName}</p>
+            <p>Airport Code: {result.PlaceId.split("-")[0]}</p>
+            <p>State: {result.RegionId !== "" ? (result.RegionId) : ("State not available")}</p>
             <button onClick={props.formatWhereFrom} value={result.PlaceId} className="btn btn-primary">Select</button>
             </li>
         ))}
@@ -17,8 +18,9 @@ function CityResults(props) {
         <ul className="list-group search-results">
         {props.toResults.map(result => (
             <li key={result.PlaceId} className="list-group-item">
-                <p>City: {result.PlaceName}</p>
-                <p>State: {result.RegionId}</p>
+                <p>Airport Name: {result.PlaceName}</p>
+                <p>Airport Code: {result.PlaceId.split("-")[0]}</p>
+                <p>State: {result.RegionId !== "" ? (result.RegionId) : ("State not available")}</p>
                 <button onClick={props.formatWhereTo} value={result.PlaceId} className="btn btn-primary">Select</button>
             </li>
             ))}

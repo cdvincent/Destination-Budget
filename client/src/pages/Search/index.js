@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { FormGroup, FormBtn, Input, Label } from "../../components/Form/Form";
-import SearchResults from "../../components/SearchResults";
+import DepartureResults from "../../components/DepartureResults";
+import ArrivalResults from "../../components/ArrivalResults";
 import API from "../../utils/API";
 import Calendar from "react-calendar";
 import CityResults from "../../components/CityResults/CityResults";
+import  "./style.css"
 const unirest = require("unirest");
-
 
 class Search extends Component {
   state = {
+    username: "",
     whereFrom: "",
     formattedWhereFrom: "",
     fromIsFormatted: false,
@@ -30,17 +32,22 @@ class Search extends Component {
     flightSearched: false,
     depResults: [],
     arrResults: [],
-    resultsPopulated: false,
-    message: ""
+    arrResultsPopulated: false,
+    depResultsPopulated: false,
+    depResultsMessage: "",
+    arrResultsMessage: "",
+    message: "",
+    arrSelectIsValid: false,
+    depSelectIsValid: false,
+    currentTrip: {},
+    totalCost: 0,
   };
   
   handleFormSubmit = event => {
     event.preventDefault();
     this.setState({
-      whereFrom: "",
       formattedWhereFrom: "",
       fromIsFormatted: false,
-      whereTo: "",
       formattedWhereTo: "",
       toIsFormatted: false,
       retDateIsValid: false,
@@ -51,8 +58,16 @@ class Search extends Component {
       flightSearched: false,
       depResults: [],
       arrResults: [],
-      resultsPopulated: false,
-      message: ""
+      arrResultsPopulated: false,
+      depResultsPopulated: false,
+      depResultsMessage: "",
+      arrResultsMessage: "",
+      message: "",
+      currentTrip: {},
+      totalCost: 0,
+      arrSelectIsValid: false,
+      depSelectIsValid: false
+  
   });
     
     const hoistedResults = this;
@@ -91,14 +106,12 @@ class Search extends Component {
     this.setState({formattedWhereFrom: event.target.value});
     this.setState({fromIsFormatted: true}, () => this.searchReady());
     console.log(event.target.value);
-    console.log(this.state.fromIsFormatted);
   };
 
   formatWhereTo = event => {
     this.setState({formattedWhereTo: event.target.value})
     this.setState({toIsFormatted: true}, () => this.searchReady());
     console.log(event.target.value);
-    console.log(this.state.toIsFormatted);
   };
 
   searchReady = () => {
@@ -131,9 +144,14 @@ class Search extends Component {
       console.log(res.body.Quotes);
       this.setState({ depResults: res.body.Quotes, error: "" });
       if (this.state.depResults.length > 0) {
-        this.setState({resultsPopulated: true});
+        this.setState({depResultsPopulated: true,
+            citySearched: false
+        });
       } else {
-        this.setState({resultsPopulated: false});
+        this.setState({
+          depResultsPopulated: false,
+          depResultsMessage: "No outbound flights found based on your search."
+        });
       }
 
     })
@@ -156,7 +174,7 @@ class Search extends Component {
     };
     console.log(userSearch);
     
-    let queryURL = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/" + this.state.formattedWhereTo + "/" + + this.state.formattedWhereFrom + "/" + this.state.retDate + "/";
+    let queryURL = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/" + this.state.formattedWhereTo + "/" + this.state.formattedWhereFrom + "/" + this.state.retDate + "/";
 
     console.log(queryURL);
 
@@ -165,17 +183,61 @@ class Search extends Component {
       console.log(res.body.Quotes);
       this.setState({ arrResults: res.body.Quotes, error: "" });
       if (this.state.arrResults.length > 0) {
-        this.setState({resultsPopulated: true});
+        this.setState({
+          arrResultsPopulated: true,
+          citySearched: false
+        });
       } else {
-        this.setState({resultsPopulated: false});
+        this.setState({
+          arrResultsPopulated: false,
+          arrResultsMessage: "No inbound flights found based on your search."
+        });
       }
 
     })
     .catch(err => this.setState({ error: err.message }));
   };
+
+  depSelect = event => {
+    console.log(event.target.value);
+    this.setState({ 
+      totalCost: this.state.totalCost += parseInt(event.target.value),
+      depSelectIsValid: true
+    }, () => this.tripReady());
+  };
+
+  arrSelect = event => {
+    console.log(event.target.value);
+    this.setState({
+      totalCost: this.state.totalCost += parseInt(event.target.value),
+      arrSelectIsValid: true
+    }, () => this.tripReady());
+  };
+
+  tripReady = () => {
+    if (this.state.arrSelectIsValid && this.state.depSelectIsValid) {
+      this.pushTrip();
+    }
+  }
+
+  pushTrip = () => {
+    console.log(this.state.whereFrom);
+    let currentTrip = {
+      totalCost: this.state.totalCost,
+      whereFrom: this.state.whereFrom,
+      whereTo: this.state.whereTo
+    }
+    this.setState({ 
+      whereFrom: "",
+      whereTo: ""
+    });
+    console.log(currentTrip);
+    API.addTrip(this.state.username, currentTrip.totalCost, currentTrip.whereTo, currentTrip.whereFrom);
+  }
   
 //setting initial date for calendar
   componentDidMount() {
+    this.setState({username: this.props.username});
     let date = new Date().getDate();
     let month = new Date().getMonth() + 1;
     let year = "" + new Date().getFullYear();
@@ -275,9 +337,10 @@ class Search extends Component {
   render() {
     return (
       <div className="container registerContainer">
+        <h1>Hello, {this.props.username}</h1>
         <form>
         <FormGroup>
-          <Label text="Destination" />
+          <Label text="Destination:" />
           <Input
             name="whereTo"
             value={this.state.whereTo}
@@ -287,7 +350,7 @@ class Search extends Component {
           />
           </FormGroup>
           <FormGroup>
-          <Label text="Departure" />
+          <Label text="Departing from:" />
           <Input
             name="whereFrom"
             value={this.state.whereFrom}
@@ -297,10 +360,12 @@ class Search extends Component {
           />
           </FormGroup>
             <Calendar
+              style= {{width: 400}}
               onChange={this.setDep}
               value={this.state.rawDepDate}
             />
             <Calendar
+              style= {{width: 400}}
               onChange={this.setRet}
               value={this.state.rawRetDate}
             />
@@ -319,8 +384,11 @@ class Search extends Component {
         {this.state.citySearched ? (<CityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
         />) : (<h2 className="resultsPlaceholder">{this.state.message}</h2>)}
 
-        {this.state.resultsPopulated && this.state.flightSearched ? (<SearchResults depResults={this.state.depResults} arrResults={this.state.arrResults} depDate={this.state.depDate} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} 
-        />) : (<h4>No results to display. Please make a new search.</h4>)}
+        {this.state.depResultsPopulated && this.state.flightSearched ? (<DepartureResults depResults={this.state.depResults} depDate={this.state.depDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} depSelect={this.depSelect} 
+        />) : (<h4>{this.state.depResultsMessage}</h4>)}
+
+        {this.state.arrResultsPopulated && this.state.flightSearched ? (<ArrivalResults arrResults={this.state.arrResults} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo}  arrSelect={this.arrSelect}
+        />) : (<h4>{this.state.arrResultsMessage}</h4>)}
       </div>
     );
   };

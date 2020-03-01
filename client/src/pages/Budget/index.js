@@ -8,14 +8,7 @@ function Budget({logout}) {
     <div>
       <Jumbotron >BUDGET PAGE</Jumbotron>
       <Container >
-        <div className="cardBackground">
-          <Row >
-            <Col size="md-6">
-            </Col>
-            <Col size="md-6">
-            </Col>
-          </Row>
-        </div>
+        <button logout={logout}>log out</button>;
       </Container>
       <Footer />
     </div>

@@ -16,7 +16,8 @@ import API from "./utils/API";
 class App extends Component {
 
   state = {
-    authorized: false
+    authorized: false,
+    username: ""
   };
 
   componentDidMount() {
@@ -29,7 +30,11 @@ class App extends Component {
       if (res.data.message) {
         this.setState({ authorized: false });
       } else {
-        this.setState({ authorized: true });
+        this.setState({ 
+        authorized: true,
+        username: res.data.username
+      });
+      console.log(this.state.username);
       };
     })
   .catch(err => {
@@ -84,9 +89,9 @@ class App extends Component {
                 <Redirect to="/" />
               )}
             </Route>
-            <Route exact path="/search" component={Search}>
+            <Route exact path="/search">
               {this.state.authorized ? (
-                <Search logout={this.logout} />
+                <Search username={this.state.username} logout={this.logout} />
               ) : (
                 <Route exact path="/search" component={Search}/>
               )}
