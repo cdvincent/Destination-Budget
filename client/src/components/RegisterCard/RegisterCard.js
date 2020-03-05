@@ -8,7 +8,7 @@ function RegisterCard() {
   return (
     <div>
         <div className="card registerCard">
-            <img className="cardImg card-img-top" src="https://www.sterlingpubliclibrary.org/images/passports.JPG" alt="Card image cap"/>
+            <img className="cardImg card-img-top" src="https://www.sterlingpubliclibrary.org/images/passports.JPG" alt="Card"/>
             <div className="card-body">
               <h3 className="card-text">Register</h3>
               <Hline color="black" />

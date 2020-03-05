@@ -7,9 +7,10 @@ import {
   Redirect
 } from "react-router-dom";
 import Search from "./pages/Search";
-import User from "./pages/User";
+import Trips from "./pages/Trips";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Budget from "./pages/Budget";
 import Home from "./pages/Home";
 import API from "./utils/API";
 
@@ -17,7 +18,8 @@ class App extends Component {
 
   state = {
     authorized: false,
-    username: ""
+    username: "",
+    display: false
   };
 
   componentDidMount() {
@@ -28,18 +30,18 @@ class App extends Component {
     API.isAuthorized()
     .then(res => {
       if (res.data.message) {
-        this.setState({ authorized: false });
+        this.setState({ authorized: false, display: true });
       } else {
         this.setState({ 
         authorized: true,
-        username: res.data.username
+        username: res.data.username,
+        display: true
       });
-      console.log(this.state.username);
       };
     })
   .catch(err => {
     console.log(err);
-    this.setState({ authorized: false });
+    this.setState({ authorized: false, display: true });
   });
 };
 
@@ -57,18 +59,10 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div>
-          <Switch>
-            <Route exact path="/">
-              {this.state.authorized ? (
-                <Redirect to="/user" />
-              ) : (
-                <Home />
-              )}
-            </Route>
+        {this.state.display ? (<div>
             <Route exact path="/login">
               {this.state.authorized ? (
-                <Redirect to="/search" />
+                <Redirect to="/trips" />
               ) : (
                 <Login 
                 isAuthorized={this.isAuthorized} />
@@ -76,41 +70,45 @@ class App extends Component {
             </Route>
             <Route exact path="/register">
               {this.state.authorized ? (
-                <Redirect to="/search" />
+                <Redirect to="/budget" />
               ) : (
                 <Register 
                 isAuthorized={this.isAuthorized} />
               )}
             </Route>
-            <Route exact path="/user">
+            <Route exact path="/budget">
               {this.state.authorized ? (
-                <User logout={this.logout} />
+                <Budget username={this.state.username} logout={this.logout} component={Budget} />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route exact path="/trips">
+              {this.state.authorized ? (
+                <Trips username={this.state.username} logout={this.logout} component={Trips}/>
               ) : (
                 <Redirect to="/" />
               )}
             </Route>
             <Route exact path="/search">
               {this.state.authorized ? (
-                <Search username={this.state.username} logout={this.logout} />
-              ) : (
-                <Route exact path="/search" component={Search}/>
-              )}
-            </Route>
-            <Route exact path="/budget">
-              {this.state.authorized ? (
-                <User logout={this.logout} />
+                <Search username={this.state.username} logout={this.logout} component={Search} />
               ) : (
                 <Redirect to="/" />
               )}
             </Route>
-            <Route>
-              <Redirect to="/" />
+            <Route exact path="/">
+              {this.state.authorized ? (
+                <Redirect to="/trips" />
+              ) : (
+                <Home component={Home} />
+              )}
             </Route>
-          </Switch>
-        </div>
+        </div>) : "" }
+        
       </Router>
     );
-  };
+};
 };
 
 export default App;

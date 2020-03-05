@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { FormGroup, FormBtn, Input, Label } from "../../components/Form/Form";
 import DepartureResults from "../../components/DepartureResults";
 import ArrivalResults from "../../components/ArrivalResults";
+import Navbar from "../../components/Navbar/Navbar";
+import Footer from "../../components/Footer/Footer";
 import API from "../../utils/API";
 import Calendar from "react-calendar";
-import CityResults from "../../components/CityResults/CityResults";
+import OutboundCityResults from "../../components/OutboundCityResults/OutboundCityResults";
+import InboundCityResults from "../../components/InboundCityResults/InboundCityResults";
 import  "./style.css"
 const unirest = require("unirest");
 
@@ -41,6 +43,8 @@ class Search extends Component {
     depSelectIsValid: false,
     currentTrip: {},
     totalCost: 0,
+    fromIsSelected: false,
+    toIsSelected: false
   };
   
   handleFormSubmit = event => {
@@ -50,8 +54,8 @@ class Search extends Component {
       fromIsFormatted: false,
       formattedWhereTo: "",
       toIsFormatted: false,
-      retDateIsValid: false,
-      depDateIsValid: false,
+      // retDateIsValid: false,
+      // depDateIsValid: false,
       cityToResults: [],
       cityFromResults: [],
       citySearched: false,
@@ -66,8 +70,9 @@ class Search extends Component {
       currentTrip: {},
       totalCost: 0,
       arrSelectIsValid: false,
-      depSelectIsValid: false
-  
+      depSelectIsValid: false,
+      fromIsSelected: false,
+      toIsSelected: true  
   });
     
     const hoistedResults = this;
@@ -104,13 +109,20 @@ class Search extends Component {
 
   formatWhereFrom = event => {
     this.setState({formattedWhereFrom: event.target.value});
-    this.setState({fromIsFormatted: true}, () => this.searchReady());
+    this.setState({
+      fromIsFormatted: true,
+      fromIsSelected: true,
+      toIsSelected: false
+    }, () => this.searchReady());
     console.log(event.target.value);
   };
 
   formatWhereTo = event => {
     this.setState({formattedWhereTo: event.target.value})
-    this.setState({toIsFormatted: true}, () => this.searchReady());
+    this.setState({
+      toIsFormatted: true,
+      toIsSelected: true
+    }, () => this.searchReady());
     console.log(event.target.value);
   };
 
@@ -125,7 +137,7 @@ class Search extends Component {
       citySearched: false, 
       flightSearched: true, 
       toIsFormatted: false, 
-      fromIsFormatted: false
+      fromIsFormatted: false,
     });
     let userSearch = {
       formattedWhereFrom: this.state.formattedWhereFrom,
@@ -142,6 +154,9 @@ class Search extends Component {
     API.skyScanner(queryURL)
     .then(res => {
       console.log(res.body.Quotes);
+      if (res.body.Quotes === undefined) {
+        this.setState({ depResultsMessage: "No outbound flights found for today's date. Please search again." })
+      }
       this.setState({ depResults: res.body.Quotes, error: "" });
       if (this.state.depResults.length > 0) {
         this.setState({depResultsPopulated: true,
@@ -150,7 +165,7 @@ class Search extends Component {
       } else {
         this.setState({
           depResultsPopulated: false,
-          depResultsMessage: "No outbound flights found based on your search."
+          depResultsMessage: "No outbound flights found based on your search. Please search again using a different date or airport."
         });
       }
 
@@ -181,6 +196,9 @@ class Search extends Component {
     API.skyScanner(queryURL)
     .then(res => {
       console.log(res.body.Quotes);
+      if (res.body.Quotes === undefined) {
+        this.setState({ arrResultsMessage: "No inbound flights found for today's date. Please search again." })
+      }
       this.setState({ arrResults: res.body.Quotes, error: "" });
       if (this.state.arrResults.length > 0) {
         this.setState({
@@ -190,7 +208,7 @@ class Search extends Component {
       } else {
         this.setState({
           arrResultsPopulated: false,
-          arrResultsMessage: "No inbound flights found based on your search."
+          arrResultsMessage: "No inbound flights found based on your search. Please search again using a different date or airport."
         });
       }
 
@@ -221,19 +239,22 @@ class Search extends Component {
   }
 
   pushTrip = () => {
-    console.log(this.state.whereFrom);
     let currentTrip = {
+      username: this.state.username,
       totalCost: this.state.totalCost,
       whereFrom: this.state.whereFrom,
-      whereTo: this.state.whereTo
+      whereTo: this.state.whereTo,
+      travelDate: this.state.depDate
     }
     this.setState({ 
       whereFrom: "",
       whereTo: ""
     });
     console.log(currentTrip);
-    API.addTrip(this.state.username, currentTrip.totalCost, currentTrip.whereTo, currentTrip.whereFrom);
-  }
+    API.addTrip(currentTrip).then( res => {
+      console.log(res);
+    });
+  };
   
 //setting initial date for calendar
   componentDidMount() {
@@ -267,7 +288,11 @@ class Search extends Component {
   setDep = date => {
     this.setState({
       initialDepDate: date,
-      message: ""
+      message: "",
+      arrSelectIsValid: false,
+      depSelectIsValid: false,
+      arrResultsMessage: "",
+      depResultsMessage: ""
     });
     let parsedDate = date.toLocaleDateString().split("/");
     if (parsedDate[0].length < 2) {
@@ -281,12 +306,12 @@ class Search extends Component {
     this.setState({ depDate: newDate });
     let dateCheck = new Date();
     dateCheck.setDate(new Date().getDate()-1);
-    if (date < dateCheck) {
+    if (date <= dateCheck) {
       this.setState({
-        message: "Time travel is way too expensive to budget. Please select a date in the future.",
+        message: "Please select a future date.",
         depDateIsValid: false
       });
-    } else if (date > this.state.initialRetDate) {
+    } else if (date >= this.state.initialRetDate) {
       this.setState({
         message: "Please select a valid return date.",  depDateIsValid: false
       });
@@ -302,7 +327,11 @@ class Search extends Component {
   setRet = date => {
     this.setState({
       initialRetDate: date,
-      message: ""
+      message: "",
+      arrSelectIsValid: false,
+      depSelectIsValid: false,
+      arrResultsMessage: "",
+      depResultsMessage: ""
     });
     let dateCheck = new Date();
     dateCheck.setDate(new Date().getDate()-1);
@@ -318,7 +347,7 @@ class Search extends Component {
     this.setState({ retDate: newDate });
     if (date < dateCheck) {
       this.setState({ 
-        message: "Time travel is way too expensive to budget. Please select a date in the future.",        retDateIsValid: false
+        message: "Please select a future date.",        retDateIsValid: false
       });
     } else if (date < this.state.initialDepDate) {
       this.setState({
@@ -334,9 +363,20 @@ class Search extends Component {
     };
   };
 
+  logout = () => {
+    this.props.logout();
+  };
+
   render() {
     return (
-      <div className="container registerContainer">
+      <div>
+      <Navbar>
+        <FormBtn
+            text="Logout"
+            onClick={this.logout}
+            classes="btn-primary logoutBtn"
+          />
+      </Navbar>
         <h1>Hello, {this.props.username}</h1>
         <form>
         <FormGroup>
@@ -381,14 +421,20 @@ class Search extends Component {
           </FormGroup>
         </form>
 
-        {this.state.citySearched ? (<CityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
+        {this.state.citySearched && this.state.fromIsSelected === false ? (<OutboundCityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
         />) : (<h2 className="resultsPlaceholder">{this.state.message}</h2>)}
 
-        {this.state.depResultsPopulated && this.state.flightSearched ? (<DepartureResults depResults={this.state.depResults} depDate={this.state.depDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} depSelect={this.depSelect} 
+        {this.state.citySearched && this.state.toIsSelected === false ? (<InboundCityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
+        />) : (<h2 className="resultsPlaceholder"></h2>)}
+
+        {this.state.depResultsPopulated && this.state.flightSearched && this.state.depSelectIsValid === false ? (<DepartureResults depResults={this.state.depResults} depDate={this.state.depDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} depSelect={this.depSelect} 
         />) : (<h4>{this.state.depResultsMessage}</h4>)}
 
-        {this.state.arrResultsPopulated && this.state.flightSearched ? (<ArrivalResults arrResults={this.state.arrResults} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo}  arrSelect={this.arrSelect}
+        {this.state.arrResultsPopulated && this.state.flightSearched && this.state.arrSelectIsValid === false ? (<ArrivalResults arrResults={this.state.arrResults} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo}  arrSelect={this.arrSelect}
         />) : (<h4>{this.state.arrResultsMessage}</h4>)}
+
+        {this.state.arrSelectIsValid && this.state.depSelectIsValid ? ("Trip added!") : (<div />)}
+        <Footer />
       </div>
     );
   };

@@ -8,7 +8,7 @@ function LoginCard() {
   return (
     <div>
         <div className="card loginCard">
-            <img className="cardImg card-img-top" src="https://www.vacationsbymarriott.com/dbimage.ashx?cropname=cap-cana-coast-dominican-republic-2121x1414-1" alt="Card image cap"/>
+            <img className="cardImg card-img-top" src="https://www.vacationsbymarriott.com/dbimage.ashx?cropname=cap-cana-coast-dominican-republic-2121x1414-1" alt="Card"/>
             <div className="card-body">
               <h3 className="card-text">Log In</h3>
               <Hline color="black" />

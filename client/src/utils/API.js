@@ -22,16 +22,22 @@ export default {
     .header("X-RapidAPI-Host", "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com")
     .header("X-RapidAPI-Key", "5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d")
   },
-  addTrip: function (username, totalCost, whereTo, whereFrom) {
-    return axios.post("/api/user/?username=" + username + "/trips/" + totalCost + whereFrom + whereTo);
+  addTrip: function (trip) {
+    return axios.post("/api/trips", trip);
   },
   getTrips: function (username) {
-    return axios.get("/api/user/?username=" + username + "/trips");
+    return axios.get("/api/trips/" + username);
+  },
+  deleteTrip: function (id) {
+    return axios.delete("/api/trips/" + id);
   },
   addBudget: function (budget) {
     return axios.post("/api/budget", budget);
   },
-  getBudget: function () {
-    return axios.get("/api/budget")
+  getBudget: function (username) {
+    return axios.get("/api/budget/" + username)
+  },
+  deleteBudget: function (username) {
+    return axios.delete("/api/budget/" + username);
   }
 };
