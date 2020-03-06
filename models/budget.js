@@ -45,6 +45,10 @@ const Budget = new Schema({
     totalBudget: {
         type: Number,
         required: "Total budget total is required"
+    },
+    dispIncome: {
+        type: Number,
+        required: "Disposable income amount is required"
     }
 });
 

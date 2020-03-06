@@ -44,7 +44,8 @@ class Search extends Component {
     currentTrip: {},
     totalCost: 0,
     fromIsSelected: false,
-    toIsSelected: false
+    toIsSelected: false,
+    quantity: 1
   };
   
   handleFormSubmit = event => {
@@ -54,8 +55,6 @@ class Search extends Component {
       fromIsFormatted: false,
       formattedWhereTo: "",
       toIsFormatted: false,
-      // retDateIsValid: false,
-      // depDateIsValid: false,
       cityToResults: [],
       cityFromResults: [],
       citySearched: false,
@@ -72,7 +71,7 @@ class Search extends Component {
       arrSelectIsValid: false,
       depSelectIsValid: false,
       fromIsSelected: false,
-      toIsSelected: true  
+      toIsSelected: true,
   });
     
     const hoistedResults = this;
@@ -219,7 +218,7 @@ class Search extends Component {
   depSelect = event => {
     console.log(event.target.value);
     this.setState({ 
-      totalCost: this.state.totalCost += parseInt(event.target.value),
+      totalCost: this.state.totalCost  += (parseInt(event.target.value) * this.state.quantity),
       depSelectIsValid: true
     }, () => this.tripReady());
   };
@@ -227,7 +226,7 @@ class Search extends Component {
   arrSelect = event => {
     console.log(event.target.value);
     this.setState({
-      totalCost: this.state.totalCost += parseInt(event.target.value),
+      totalCost: this.state.totalCost += (parseInt(event.target.value) * this.state.quantity),
       arrSelectIsValid: true
     }, () => this.tripReady());
   };
@@ -244,8 +243,10 @@ class Search extends Component {
       totalCost: this.state.totalCost,
       whereFrom: this.state.whereFrom,
       whereTo: this.state.whereTo,
-      travelDate: this.state.depDate
+      travelDate: this.state.depDate,
+      quantity: this.state.quantity
     }
+    console.log(currentTrip.quantity);
     this.setState({ 
       whereFrom: "",
       whereTo: ""
@@ -284,6 +285,10 @@ class Search extends Component {
       [name]: value
     });
   };
+
+  handleSelectChange = event => {
+    this.setState({quantity: parseInt(event.target.value)});
+  }
 
   setDep = date => {
     this.setState({
@@ -399,6 +404,17 @@ class Search extends Component {
             type="text"
           />
           </FormGroup>
+          <Label text="Quantity:" />
+          <select style={{width: 50}} value={this.state.quantity} onChange={this.handleSelectChange} className="browser-default custom-select">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
             <Calendar
               style= {{width: 400}}
               onChange={this.setDep}

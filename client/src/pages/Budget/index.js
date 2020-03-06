@@ -20,7 +20,6 @@ class Budget extends Component {
     creditCards: "",
     otherExpenses: "",
     income: "",
-    totalBudget: ""
   };
 
   handleInputChange = event => {
@@ -30,7 +29,7 @@ class Budget extends Component {
     });
 };
 
-pushBudget = () => {
+pushBudget = (dispIncome, totalBudget) => {
 
   let budget = {
     username: this.state.username,
@@ -43,18 +42,10 @@ pushBudget = () => {
     creditCards: parseInt(this.state.creditCards),
     otherExpenses: parseInt(this.state.otherExpenses),
     income: parseInt(this.state.income),
-    totalBudget: parseInt(this.state.rent) +
-    parseInt(this.state.utilities) +
-    parseInt(this.state.internet) +
-    parseInt(this.state.carExpenses) +
-    parseInt(this.state.groceries) +
-    parseInt(this.state.cell) +
-    parseInt(this.state.creditCards) +
-    parseInt(this.state.income)  + 
-    parseInt(this.state.otherExpenses)
-  }
+    totalBudget: totalBudget,
+    dispIncome: dispIncome
+  };
   this.setState({
-    totalBudget: budget.totalBudget,
     budgetExists: true
   });
   API.addBudget(budget).then( res => {
@@ -78,14 +69,29 @@ componentDidMount = () => {
           budgetExists: true
       });
     } else {
+      this.setState({budgetExists: false});
       console.log("No budget found");
     }
   });
 };
 
 handleFormSubmit = event => {
+  let totalBudget = parseInt(this.state.rent) +
+  parseInt(this.state.utilities) +
+  parseInt(this.state.internet) +
+  parseInt(this.state.carExpenses) +
+  parseInt(this.state.groceries) +
+  parseInt(this.state.cell) +
+  parseInt(this.state.creditCards) + 
+  parseInt(this.state.otherExpenses);
+
+  let income = parseInt(this.state.income);
+  console.log(income)
+  console.log(totalBudget);
+  let dispIncome = income - totalBudget;
+console.log(dispIncome, totalBudget);
   event.preventDefault();
-  this.pushBudget();
+  this.pushBudget(dispIncome, totalBudget);
   this.setState({
     rent: "",
     utilities: "",
@@ -96,7 +102,8 @@ handleFormSubmit = event => {
     creditCards: "",
     otherExpenses: "",
     income: "",
-    totalBudget: ""
+    totalBudget: "",
+    dispIncome: ""
   });
 };
 
@@ -124,8 +131,21 @@ render() {
           classes="btn-primary logoutBtn"
         />
         </Navbar>
-        { this.state.budgetExists ? (<div>"Here is your budget"<button onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button></div>) : (
+        { this.state.budgetExists ? (
+        <div>
+          <p>Rent: ${this.state.budget[0].rent}</p>
+          <p>Utilities: ${this.state.budget[0].utilities}</p>
+          <p>Internet: ${this.state.budget[0].internet}</p>
+          <p>Car Expenses: ${this.state.budget[0].carExpenses}</p>
+          <p>Groceries: ${this.state.budget[0].groceries}</p>
+          <p>Cell Phone: ${this.state.budget[0].cell}</p>
+          <p>Credit Cards: ${this.state.budget[0].creditCards}</p>
+          <p>Other Expenses: ${this.state.budget[0].otherExpenses}</p>
+          <p>Income: ${this.state.budget[0].income}</p>
+          <p>Total Bills: ${this.state.budget[0].totalBudget}</p>
+          <p>Disposable Income: ${this.state.budget[0].dispIncome}</p><button className="btn btn-primary" onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button></div>) : (
       <form>
+        <h3>Enter your monthly budget for each category:</h3>
             <FormGroup>
             <Label text="Rent:" />
             <Input
@@ -200,7 +220,7 @@ render() {
             />
             </FormGroup>
             <FormGroup>
-            <Label text="Total Income:" />
+            <Label text="Total Monthly Income:" />
             <Input
                 name="income"
                 value={this.state.income}

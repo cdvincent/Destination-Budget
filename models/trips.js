@@ -21,6 +21,10 @@ const Trip = new Schema({
     travelDate: {
         type: Date,
         required: "Date is required"
+    },
+    quantity: {
+        type: Number,
+        required: "Quantity is required"
     }
 });
 

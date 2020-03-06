@@ -10,13 +10,19 @@ class Trips extends Component {
         trips: [],
         redirect: false,
         recommendedSavings: 0,
+        dailyDispIncome: 0,
         calculated: false,
-        message: ""
+        message: "",
+        budget: [],
+        budgetExists: false,
+        tripPassed: false,
+        isAffordable: false
     };
 
     componentDidMount() {
         this.setState({ recommendedSavings: 0 })
         this.fetchTrips();
+        this.fetchBudget();
     };
 
     handleInputChange = event => {
@@ -25,6 +31,22 @@ class Trips extends Component {
             [name]: value
         });
     };
+
+    fetchBudget = () => {
+        API.getBudget(this.props.username)
+        .then(res => {
+            console.log(res.data)
+            if (res.data) {
+            this.setState({
+                budget: res.data,
+                budgetExists: true
+            });
+            console.log(this.state.budget);
+            } else {
+            console.log("No budget found");
+            }
+        });
+    }
 
     fetchTrips = () => {
         API.getTrips(this.props.username)
@@ -36,31 +58,53 @@ class Trips extends Component {
         });
     };
 
-    recommendBudget = event => {
+    recommendReady = event => {
         this.setState({
             calculated: false,
-            recommendedSavings: 0
-        });
+            tripPassed: false,
+            message: "",
+            recommendedSavings: 0,
+            isAffordable: false
+        })
+        this.recommendBudget(event)
+    }
+
+    recommendBudget = event => {
         let props=event.target.value.split(",");
         let today = new Date();
         let tripDate = new Date(props[0]);
         let daysUntilTrip = ((tripDate.getTime() - today.getTime()) / (1000 * 3600 * 24)) + 4/24
-        console.log(tripDate);
-        console.log(today);
-        console.log(daysUntilTrip);
-        if (daysUntilTrip <= 1) {
+        if (daysUntilTrip <= 1 && daysUntilTrip > 0) {
             this.setState ({
                 recommendedSavings: parseFloat(props[1]),
                 calculated: true
-            })
-        } else {
+            });
+        } else if (daysUntilTrip > 1) {
         let recommendedSavings = parseFloat(props[1]) / daysUntilTrip;
         this.setState({ 
             recommendedSavings: recommendedSavings,
             calculated: true
         });
-        console.log(recommendedSavings);
-    };
+        } else {
+            this.setState({
+                calculated: true,
+                tripPassed: true,
+                message: "This trip has passed. Search for another!"
+            });
+        };
+        let dispIncome = this.state.budget[0].dispIncome
+        let dailyDispIncome = dispIncome / 30;
+        if (dailyDispIncome >= this.state.recommendedSavings) {
+            this.setState({ 
+                isAffordable: true,
+                dailyDispIncome: dailyDispIncome
+             })
+        } else {
+            this.setState({
+                isAffordable: false,
+                dailyDispIncome: dailyDispIncome
+            })
+        };
     };
 
     deleteTrip = event => {
@@ -86,8 +130,11 @@ class Trips extends Component {
                     classes="btn-primary logoutBtn"
                 />
                 </Navbar>
-                        { this.state.calculated ? (<div>You must save an estimated average of ${this.state.recommendedSavings.toFixed(2)} per day to afford this trip.</div>
+                        { this.state.calculated && !this.state.tripPassed ? (<div>You must save an estimated average of ${this.state.recommendedSavings.toFixed(2)} per day to afford this trip.</div>
                        ) : ("")}
+                       { this.state.calculated && this.state.tripPassed ? (<div>{this.state.message}</div>) : ("")}
+                       { this.state.isAffordable && !this.state.tripPassed ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day."</div>) : ("")}
+                       { !this.state.isAffordable && this.state.calculated ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day."</div>) : ("")}
                     <h3>Trips: </h3>
                     <ul className="list-group search-results">
                     {this.state.trips.map(result =>(
@@ -96,8 +143,8 @@ class Trips extends Component {
                             <p>Traveling from: {result.whereFrom}</p>
                             <p>Traveling to: {result.whereTo}</p>
                             <p>Estimated cost: ${result.totalCost}</p>
-                            <button onClick={this.recommendBudget} value={[result.travelDate, result.totalCost]}>Budget Trip</button>
-                            <button onClick={this.deleteTrip} value={result._id}>Delete Trip</button>
+                            <button className="btn btn-primary" onClick={this.recommendReady} value={[result.travelDate, result.totalCost]}>Budget Trip</button>
+                            <button className="btn btn-secondary" onClick={this.deleteTrip} value={result._id}>Delete Trip</button>
                         </li>
                     ))}
                     </ul>

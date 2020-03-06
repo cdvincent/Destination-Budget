@@ -47,7 +47,8 @@ router.post("/api/trips", function(req, res) {
         totalCost: req.body.totalCost,
         whereFrom: req.body.whereFrom,
         whereTo: req.body.whereTo,
-        travelDate: req.body.travelDate
+        travelDate: req.body.travelDate,
+        quantity: req.body.quantity
   })).then(function(trips) {
     res.json(trips)
   }).catch(function(err) {
@@ -91,7 +92,8 @@ router.post("/api/budget", function(req, res) {
         creditCards: req.body.creditCards,
         otherExpenses: req.body.otherExpenses,
         income: req.body.income,
-        totalBudget: req.body.totalBudget
+        totalBudget: req.body.totalBudget,
+        dispIncome: req.body.dispIncome
   })).then(function(budget) {
     res.json(budget)
   }).catch(function(err) {
