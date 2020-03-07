@@ -16,6 +16,11 @@ body {
       text-align: center;
   }
 
+  .formInput {
+    width: 70%;
+    text-align: center;
+}
+
   .delete {
       width: 300px;
       margin-left: 60px;

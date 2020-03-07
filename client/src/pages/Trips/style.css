@@ -24,12 +24,20 @@ body {
     border-radius: 4px;
     text-align: center;
     margin: 50px 4%;
-    width: 40%;
+    width: 80%;
     float: left;
 };
 
 .tripBtn {
     display: inline-flex;
+}
+
+.results {
+    border-style: solid;
+    border-color: #333;
+    border-width: 1px;
+    border-radius: 4px;
+    text-align: center;
 }
 
 h3 {

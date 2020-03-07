@@ -16,7 +16,7 @@ function Navbar(props) {
       <div>
       <Link className="mx-auto" to="/trips"
       >
-      <img src={logo} className="rounded-circle logo" />
+      <img alt="logo" src={logo} className="rounded-circle logo" />
       </Link>
       </div>
       <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">

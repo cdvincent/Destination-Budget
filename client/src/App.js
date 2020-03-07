@@ -3,7 +3,6 @@ import "./App.css";
 import {
   BrowserRouter as Router,
   Route,
-  Switch,
   Redirect
 } from "react-router-dom";
 import Search from "./pages/Search";
@@ -13,8 +12,9 @@ import Register from "./pages/Register";
 import Budget from "./pages/Budget";
 import Home from "./pages/Home";
 import API from "./utils/API";
+const dotenv = require('dotenv').config();
 
-console.log(`${process.env.REACT_APP_API_KEY}`);
+
 
 class App extends Component {
 

@@ -3,6 +3,9 @@ import Footer from "../../components/Footer/Footer";
 import { Input, Label, FormBtn, FormGroup, Small } from "../../components/Form/Form";
 import API from "../../utils/API"
 import Navbar from "../../components/Navbar/Navbar";
+import { ToastContainer } from 'react-toastify';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css'; 
 import "./style.css"
 
 class Budget extends Component {
@@ -55,6 +58,7 @@ pushBudget = (dispIncome, totalBudget) => {
       return false
     };
   });
+  this.addToast();
 };
 
 componentDidMount = () => {
@@ -118,16 +122,37 @@ deleteBudget = event => {
       console.log(res.data);
       API.getBudget(this.props.username);
   });
+  this.deleteToast();
 };
+
+deleteToast = () => {
+  toast("Budget successfully deleted");
+}
+
+addToast = () => {
+  toast("Budget successfully added");
+}
 
 render() {
   return (
     <div>
       <Navbar logout={this.logout} username={this.state.username} />
+      <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnVisibilityChange
+                    draggable
+                    pauseOnHover
+                    />
+                <ToastContainer />
       <div className="container">
         { this.state.budgetExists ? (
           <div className="tableStyle">
-          <h3 className="header">Here is your current budet, {this.state.username}:</h3>
+          <h3 className="header">Here is your current budget, {this.state.username}:</h3>
           <table className="table">
             <thead>
               <tr>
@@ -189,88 +214,116 @@ render() {
         <h3>Enter your monthly budget for each category:</h3>
             <FormGroup>
             <Label text="Rent:" />
+            <div>
             <Input
                 name="rent"
                 value={this.state.rent}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </ div>
             </FormGroup>
             <FormGroup>
             <Label text="Utilities:" />
+            <div>
             <Input
                 name="utilities"
                 value={this.state.utilities}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Internet:" />
+            <div>
             <Input
                 name="internet"
                 value={this.state.internet}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Groceries:" />
+            <div>
             <Input
                 name="groceries"
                 value={this.state.groceries}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Car expenses:" />
+            <div>
             <Input
                 name="carExpenses"
                 value={this.state.carExpenses}
                 onChange={this.handleInputChange}
                 placeholder="(Car payment, Gas, Insurance)"
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Cell phone:" />
+            <div>
             <Input
                 name="cell"
                 value={this.state.cell}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Credit card payments:" />
+            <div>
             <Input
                 name="creditCards"
                 value={this.state.creditCards}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Other expenses:" />
+            <div>
             <Input
                 name="otherExpenses"
                 value={this.state.otherExpenses}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>
             <FormGroup>
             <Label text="Total Monthly Income:" />
+            <div>
             <Input
                 name="income"
                 value={this.state.income}
                 onChange={this.handleInputChange}
                 type="number"
+                className="formInput"
             />
+            </div>
             </FormGroup>            
             <FormGroup>
-                <FormBtn
+              <div>
+              <FormBtn
                 text="Submit"
                 onClick={this.handleFormSubmit}
                 classes="btn-primary"
@@ -284,7 +337,9 @@ render() {
                     this.state.creditCards !==  "" && this.state.creditCards >= 0 &&
                     this.state.income !==  "" && this.state.income >= 0 ? "" : "disabled"
                 }
-                />{
+                />
+                </div>
+                {
                   this.state.rent !== "" && this.state.rent >= 0 && 
                   this.state.utilities !== "" && this.state.utilities >= 0 && 
                   this.state.internet !== "" && this.state.internet >= 0 &&

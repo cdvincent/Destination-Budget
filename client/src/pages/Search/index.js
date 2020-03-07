@@ -85,7 +85,7 @@ class Search extends Component {
     from.query({"query": this.state.whereFrom})
     from.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key": process.env.REACT_APP_API_KEY
+      "x-rapidapi-key": "5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
     });
     from.then(function (res) {
       if (res.error) throw new Error(res.error);
@@ -99,7 +99,7 @@ class Search extends Component {
     to.query({"query": this.state.whereTo})
     to.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key":process.env.REACT_APP_API_KEY
+      "x-rapidapi-key":"5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
     });
     to.then(function (res) {
       if (res.error) throw new Error(res.error);
@@ -259,6 +259,7 @@ class Search extends Component {
     API.addTrip(currentTrip).then( res => {
       console.log(res);
     });
+    this.tripAddedToast();
   };
   
 //setting initial date for calendar
@@ -386,17 +387,17 @@ class Search extends Component {
       <Navbar logout={this.logout} username={this.state.username}>
       </Navbar>
       <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnVisibilityChange
-                    draggable
-                    pauseOnHover
-                    />
-                <ToastContainer />
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnVisibilityChange
+          draggable
+          pauseOnHover
+          />
+      <ToastContainer />
       <div className="container">
         <h3>Let's search for a new trip, {this.props.username}!</h3>
         <form>
@@ -467,7 +468,7 @@ class Search extends Component {
         />) : (<h2 className="resultsPlaceholder">{this.state.message}</h2>)}
 
         {this.state.citySearched && this.state.toIsSelected === false ? (<InboundCityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
-        />) : (<h2 className="resultsPlaceholder"></h2>)}
+        />) : (<p className="resultsPlaceholder"></p>)}
 
         {this.state.depResultsPopulated && this.state.flightSearched && this.state.depSelectIsValid === false ? (<DepartureResults depResults={this.state.depResults} depDate={this.state.depDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} depSelect={this.depSelect} 
         />) : (<h4>{this.state.depResultsMessage}</h4>)}

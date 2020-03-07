@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { FormBtn } from "../../components/Form/Form";
-import { render } from 'react-dom';
 import { ToastContainer } from 'react-toastify';
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css'; 
@@ -125,8 +124,8 @@ class Trips extends Component {
         API.deleteTrip(event.target.value)
         .then(res => {
             console.log(res.data);
-            this.fetchTrips();
             this.deleteToast();
+            this.fetchTrips();
         });
     };
 
@@ -157,12 +156,14 @@ class Trips extends Component {
                     />
                 <ToastContainer />
                 <div className="container">
+                    <h3>Here are you trips, {this.state.username}: </h3>
+                    <div className="results">
                         { this.state.calculated && !this.state.tripPassed ? (<div>You must save an estimated average of ${this.state.recommendedSavings.toFixed(2)} per day to afford this trip.</div>
                        ) : ("")}
                        { this.state.calculated && this.state.tripPassed ? (<div>{this.state.message}</div>) : ("")}
-                       { this.state.isAffordable && !this.state.tripPassed ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day."</div>) : ("")}
+                       { this.state.isAffordable && !this.state.tripPassed ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day.</div>) : ("")}
                        { !this.state.isAffordable && this.state.calculated ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day.</div>) : ("")}
-                    <h3>Here are you trips, {this.state.username}: </h3>
+                       </div>
                     <ul className="list-group search-results allTrips">
                     {this.state.trips.map(result =>(
                         <li key={result._id} className="list-group-item tripDiv">
@@ -183,7 +184,6 @@ class Trips extends Component {
                     {this.state.trips.length > 0 ? ( <p></p> ) : (
                 <h3>You have no trips yet!</h3> )}
                 </div>
-                <Footer />
             </div>
         );
     };
