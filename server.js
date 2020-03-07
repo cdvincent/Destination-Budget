@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require('dotenv').config();
 const express = require("express");
 const routes = require("./routes");
 const mongoose = require("mongoose");
@@ -27,7 +27,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/project3", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://user:Fr33@verage@ds113640.mlab.com:13640/heroku_rs5fbzvs", { useNewUrlParser: true });
 
 app.listen(PORT, function() {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);

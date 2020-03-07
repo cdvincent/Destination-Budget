@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Col, Row, Container } from "../../components/Grid/Grid";
-import Jumbotron from "../../components/Jumbotron/Jumbotron";
 import Footer from "../../components/Footer/Footer";
 import { Input, Label, FormBtn, FormGroup, Small } from "../../components/Form/Form";
 import API from "../../utils/API"
 import Navbar from "../../components/Navbar/Navbar";
+import "./style.css"
 
 class Budget extends Component {
   state = {
@@ -124,26 +123,68 @@ deleteBudget = event => {
 render() {
   return (
     <div>
-      <Navbar>
-        <FormBtn
-          text="Logout"
-          onClick={this.logout}
-          classes="btn-primary logoutBtn"
-        />
-        </Navbar>
+      <Navbar logout={this.logout} username={this.state.username} />
+      <div className="container">
         { this.state.budgetExists ? (
-        <div>
-          <p>Rent: ${this.state.budget[0].rent}</p>
-          <p>Utilities: ${this.state.budget[0].utilities}</p>
-          <p>Internet: ${this.state.budget[0].internet}</p>
-          <p>Car Expenses: ${this.state.budget[0].carExpenses}</p>
-          <p>Groceries: ${this.state.budget[0].groceries}</p>
-          <p>Cell Phone: ${this.state.budget[0].cell}</p>
-          <p>Credit Cards: ${this.state.budget[0].creditCards}</p>
-          <p>Other Expenses: ${this.state.budget[0].otherExpenses}</p>
-          <p>Income: ${this.state.budget[0].income}</p>
-          <p>Total Bills: ${this.state.budget[0].totalBudget}</p>
-          <p>Disposable Income: ${this.state.budget[0].dispIncome}</p><button className="btn btn-primary" onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button></div>) : (
+          <div className="tableStyle">
+          <h3 className="header">Here is your current budet, {this.state.username}:</h3>
+          <table className="table">
+            <thead>
+              <tr>
+              <th>Category</th>
+              <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Rent:</td>
+                <td>${this.state.budget[0].rent}</td>
+              </tr>
+              <tr>
+                <td>Utilities:</td>
+                <td>${this.state.budget[0].utilities}</td>
+              </tr>
+              <tr>
+                <td>Internet:</td>
+                <td>${this.state.budget[0].internet}</td>
+              </tr>
+              <tr>
+                <td>Car Expenses:</td>
+                <td>${this.state.budget[0].carExpenses}</td>
+              </tr>
+              <tr>
+                <td>Groceries:</td>
+                <td>${this.state.budget[0].groceries}</td>
+              </tr>
+              <tr>
+                <td>Cell Phone:</td>
+                <td>${this.state.budget[0].cell}</td>
+                </tr>
+              <tr>
+                <td>Credit Cards:</td>
+                <td>${this.state.budget[0].creditCards}</td>
+              </tr>
+              <tr>
+                <td>Other Expenses:</td>
+                <td>${this.state.budget[0].otherExpenses}</td>
+              </tr>
+              <tr>
+                <td>Income:</td>
+                <td>${this.state.budget[0].income}</td>
+              </tr>
+              <tr>
+                <td>Total Bills:</td>
+                <td>${this.state.budget[0].totalBudget}</td>
+              </tr>
+              <tr>
+                <td>Disposable Income:</td>
+                <td>${this.state.budget[0].dispIncome}</td>
+              </tr>
+              </tbody>
+              </table>
+              <button className="btn btn-primary delete" onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button>
+            </div>
+            ) : (
       <form>
         <h3>Enter your monthly budget for each category:</h3>
             <FormGroup>
@@ -256,6 +297,7 @@ render() {
                 </FormGroup>
             </form>
         )}
+        </div>
         <Footer />
     </div>
     );

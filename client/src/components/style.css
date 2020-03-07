@@ -25,15 +25,17 @@ body {
 .jumbotron {
     background-image: url("https://www.jetsetter.com/uploads/sites/7/2018/04/Yq6ObbTP-1380x690.jpeg");
     background-repeat: no-repeat;
-    background-size: 100%;
-    height: 500px;
+    background-size: cover;
 }
 
 .title {
     color:white;
-    font-size: 65px;
+    font-size: 100px;
     font-weight: bold;
+    font-family: fantasy;
     text-align: center;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .titleBackground {
@@ -49,6 +51,7 @@ body {
     background: rgb(65, 65, 65);
     background: rgba(65, 65, 65, 0.5);
     border-radius: 5px;
+    margin-bottom: 30px;
 }
 
 .loginCard {
@@ -63,12 +66,37 @@ body {
     border-radius: 5px;
 }
 
-.navBar {
-    height: 60px;
-    width: 100%;
-    margin-top: 50px;
-}
-
 .cardBtn {
     margin-bottom: 20px;
 }
+
+.btn {
+    margin: 5px;
+}
+
+.welcome {
+    font-size: 18px;
+    color: white;
+}
+
+.logo {
+    width: 50%;
+    height: 50%;
+}
+
+.logout {
+    width: 100px;
+    float: left;
+    color: white;
+    margin-left: 20px;
+    border-radius: 2px;
+}
+
+@media only screen and (max-width: 600px) {
+    .logo {
+        width: 50%;
+        height: 50%;
+        float: right;
+    }
+
+  }

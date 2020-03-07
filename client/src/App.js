@@ -14,6 +14,8 @@ import Budget from "./pages/Budget";
 import Home from "./pages/Home";
 import API from "./utils/API";
 
+console.log(`${process.env.REACT_APP_API_KEY}`);
+
 class App extends Component {
 
   state = {

@@ -1,0 +1,22 @@
+body {
+    background-color: rgba(80, 220, 220, 0.7);
+  }
+
+  table {
+      text-align: left;
+  }
+
+  .tableStyle {
+    margin: 0 auto;
+    width: 60%;
+    text-align: center;
+  }
+
+  .header {
+      text-align: center;
+  }
+
+  .delete {
+      width: 300px;
+      margin-left: 60px;
+  }

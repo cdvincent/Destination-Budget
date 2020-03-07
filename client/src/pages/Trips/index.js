@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { FormBtn } from "../../components/Form/Form";
+import { render } from 'react-dom';
+import { ToastContainer } from 'react-toastify';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css'; 
 import API from "../../utils/API";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import Hline from "../../components/Hline/Hline";
+import "./style.css";
 
 class Trips extends Component {
     state = {
@@ -20,7 +26,10 @@ class Trips extends Component {
     };
 
     componentDidMount() {
-        this.setState({ recommendedSavings: 0 })
+        this.setState({
+            recommendedSavings: 0,
+            username: this.props.username
+        });
         this.fetchTrips();
         this.fetchBudget();
     };
@@ -31,6 +40,10 @@ class Trips extends Component {
             [name]: value
         });
     };
+
+    deleteToast = () => {
+        toast("Trip successfully deleted");
+    }
 
     fetchBudget = () => {
         API.getBudget(this.props.username)
@@ -113,6 +126,7 @@ class Trips extends Component {
         .then(res => {
             console.log(res.data);
             this.fetchTrips();
+            this.deleteToast();
         });
     };
 
@@ -123,33 +137,52 @@ class Trips extends Component {
     render() {
         return (
             <div>
-                <Navbar>
+                <Navbar logout={this.logout} username={this.state.username}>
                 <FormBtn
                     text="Logout"
                     onClick={this.logout}
                     classes="btn-primary logoutBtn"
                 />
                 </Navbar>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnVisibilityChange
+                    draggable
+                    pauseOnHover
+                    />
+                <ToastContainer />
+                <div className="container">
                         { this.state.calculated && !this.state.tripPassed ? (<div>You must save an estimated average of ${this.state.recommendedSavings.toFixed(2)} per day to afford this trip.</div>
                        ) : ("")}
                        { this.state.calculated && this.state.tripPassed ? (<div>{this.state.message}</div>) : ("")}
                        { this.state.isAffordable && !this.state.tripPassed ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day."</div>) : ("")}
-                       { !this.state.isAffordable && this.state.calculated ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day."</div>) : ("")}
-                    <h3>Trips: </h3>
-                    <ul className="list-group search-results">
+                       { !this.state.isAffordable && this.state.calculated ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day.</div>) : ("")}
+                    <h3>Here are you trips, {this.state.username}: </h3>
+                    <ul className="list-group search-results allTrips">
                     {this.state.trips.map(result =>(
-                        <li key={result._id} className="list-group-item">
-                            <p>Date of travel: {result.travelDate.toString().split("T")[0]}</p> 
-                            <p>Traveling from: {result.whereFrom}</p>
-                            <p>Traveling to: {result.whereTo}</p>
-                            <p>Estimated cost: ${result.totalCost}</p>
-                            <button className="btn btn-primary" onClick={this.recommendReady} value={[result.travelDate, result.totalCost]}>Budget Trip</button>
+                        <li key={result._id} className="list-group-item tripDiv">
+                            <p>Date of travel: <p>{result.travelDate.toString().split("T")[0]}</p>
+                            </p> 
+                            <Hline />
+                            <p>Traveling from: <p>{result.whereFrom}</p></p>
+                            <Hline />
+                            <p>Traveling to: <p>{result.whereTo}</p></p>
+                            <Hline />
+                            <p>Estimated cost: <p>${result.totalCost}</p></p>
+                            <Hline />
+                            <button className="btn btn-primary tripBtn" onClick={this.recommendReady} value={[result.travelDate, result.totalCost]}>Budget Trip</button>
                             <button className="btn btn-secondary" onClick={this.deleteTrip} value={result._id}>Delete Trip</button>
                         </li>
                     ))}
                     </ul>
                     {this.state.trips.length > 0 ? ( <p></p> ) : (
                 <h3>You have no trips yet!</h3> )}
+                </div>
                 <Footer />
             </div>
         );

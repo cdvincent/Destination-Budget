@@ -1,0 +1,43 @@
+body {
+    background-color: rgba(80, 220, 220, 0.7);
+  }
+
+.container {
+    background-color: white;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    padding-top: 50px;
+    margin-bottom: 50px;
+}
+
+.allTrips {
+    display: inline-block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tripDiv {
+    border-style: solid;
+    border-color: #333;
+    border-width: 1px;
+    border-radius: 4px;
+    text-align: center;
+    margin: 50px 4%;
+    width: 40%;
+    float: left;
+};
+
+.tripBtn {
+    display: inline-flex;
+}
+
+h3 {
+    text-align: center;
+}
+
+@media only screen and (max-width: 570px) {
+    .tripDiv {
+        width: 60%;
+    };
+}

@@ -112,49 +112,73 @@ class Register extends Component {
   render() {
     return (
       <div className="container registerContainer">
-        <form>
+      <div className="greeting">
+        <h3 className="greetingText">Hello, guest.</h3>
+        <h3 className="greetingText">Register to access the site!</h3>
+      </div>
+        <form className="formBackground">
         <FormGroup>
-          <Label text="Username" />
-          <Input
-            name="username"
-            value={this.state.username}
-            onChange={this.handleInputChange}
-            placeholder="at least 8 characters"
-            type="text"
-          />
+          <Label text="Username:" />
+          <div>
+            <Input
+              name="username"
+              value={this.state.username}
+              onChange={this.handleInputChange}
+              placeholder="At least 8 characters"
+              type="text"
+              className="formInput"
+            />
+          </div>
+          <div>
           {this.state.validUN ? <Small text="Username is available" /> : <Small text="Username is not available" />}
+          </div>
           </FormGroup>
           <FormGroup>
-          <Label text="Email" />
-          <Input
-            name="email"
-            value={this.state.email}
-            onChange={this.handleInputChange}
-            placeholder="Email"
-            type="email"
-          />
-          {this.state.validEM ? <Small text="Email is valid" /> : <Small text="Email is invalid" />}
+          <Label text="Email:" />
+          <div>
+            <Input
+              name="email"
+              value={this.state.email}
+              onChange={this.handleInputChange}
+              placeholder="Email"
+              type="email"
+              className="formInput"
+            />
+          </div>
+          <div>
+            {this.state.validEM ? <Small text="Email is valid" /> : <Small text="Email is invalid" />}
+          </div>
           </FormGroup>
           <FormGroup>
-          <Label text="Password" />
-          <Input
-            name="password"
-            value={this.state.password}
-            onChange={this.handleInputChange}
-            placeholder="at least 8 characters"
-            type="password"
-          />
-          {this.state.validPW ? <Small text="Password is valid" /> : <Small text="Password must be at least 8 characters" />}
+          <Label text="Password:" />
+          <div>
+            <Input
+              name="password"
+              value={this.state.password}
+              onChange={this.handleInputChange}
+              placeholder="At least 8 characters"
+              type="password"
+              className="formInput"
+            />
+          </div>
+          <div>
+            {this.state.validPW ? <Small text="Password is valid" /> : <Small text="Password must be at least 8 characters" />}
+          </div>
           </FormGroup>
           <FormGroup>
-          <Label text="Confirm Password" />
-          <Input
-            name="confirm"
-            value={this.state.confirm}
-            onChange={this.handleInputChange}
-            type="password"
-          />
-          {this.state.validCF ? <Small text="Passwords match" /> : <Small text="Passwords don't match" />}
+          <Label text="Confirm Password:" />
+          <div>
+            <Input
+              name="confirm"
+              value={this.state.confirm}
+              onChange={this.handleInputChange}
+              type="password"
+              className="formInput"
+            />
+          </div>
+          <div>
+            {this.state.validCF ? <Small text="Passwords match" /> : <Small text="Passwords don't match" />}
+          </div>
           </FormGroup>
           {this.state.error ? <Small text={this.state.error} /> : ""}
 
@@ -169,7 +193,9 @@ class Register extends Component {
               onClick={this.register}
               classes="btn-primary"
             />
+            <div>
             <Link to="/login">Already registered? Click here.</Link>
+            </div>
           </FormGroup>
         </form>
       </div>

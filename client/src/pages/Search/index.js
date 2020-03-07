@@ -8,6 +8,10 @@ import API from "../../utils/API";
 import Calendar from "react-calendar";
 import OutboundCityResults from "../../components/OutboundCityResults/OutboundCityResults";
 import InboundCityResults from "../../components/InboundCityResults/InboundCityResults";
+import { Link } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css'; 
 import  "./style.css"
 const unirest = require("unirest");
 
@@ -81,7 +85,7 @@ class Search extends Component {
     from.query({"query": this.state.whereFrom})
     from.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key": "5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
+      "x-rapidapi-key": process.env.REACT_APP_API_KEY
     });
     from.then(function (res) {
       if (res.error) throw new Error(res.error);
@@ -95,7 +99,7 @@ class Search extends Component {
     to.query({"query": this.state.whereTo})
     to.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key": "5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
+      "x-rapidapi-key":process.env.REACT_APP_API_KEY
     });
     to.then(function (res) {
       if (res.error) throw new Error(res.error);
@@ -372,40 +376,59 @@ class Search extends Component {
     this.props.logout();
   };
 
+  tripAddedToast = () => {
+    toast("Trip successfully added");
+}
+
   render() {
     return (
       <div>
-      <Navbar>
-        <FormBtn
-            text="Logout"
-            onClick={this.logout}
-            classes="btn-primary logoutBtn"
-          />
+      <Navbar logout={this.logout} username={this.state.username}>
       </Navbar>
-        <h1>Hello, {this.props.username}</h1>
+      <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnVisibilityChange
+                    draggable
+                    pauseOnHover
+                    />
+                <ToastContainer />
+      <div className="container">
+        <h3>Let's search for a new trip, {this.props.username}!</h3>
         <form>
         <FormGroup>
           <Label text="Destination:" />
+          <div>
           <Input
             name="whereTo"
             value={this.state.whereTo}
             onChange={this.handleInputChange}
             placeholder="Where are you flying to?"
             type="text"
+            className="formInput"
           />
+          </div>
           </FormGroup>
           <FormGroup>
           <Label text="Departing from:" />
+          <div>
           <Input
             name="whereFrom"
             value={this.state.whereFrom}
             onChange={this.handleInputChange}
             placeholder="Where are you flying from?"
             type="text"
+            className="formInput"
           />
+          </div>
           </FormGroup>
-          <Label text="Quantity:" />
-          <select style={{width: 50}} value={this.state.quantity} onChange={this.handleSelectChange} className="browser-default custom-select">
+          <Label text="Passengers: " />
+          <div>
+          <select value={this.state.quantity} onChange={this.handleSelectChange} className="browser-default custom-select quantity">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -415,21 +438,24 @@ class Search extends Component {
             <option value="7">7</option>
             <option value="8">8</option>
           </select>
+          </div>
+          <div className="calDiv">
             <Calendar
-              style= {{width: 400}}
               onChange={this.setDep}
               value={this.state.rawDepDate}
+              className="calendar"
             />
             <Calendar
-              style= {{width: 400}}
               onChange={this.setRet}
               value={this.state.rawRetDate}
+              className="calendar"
             />
+            </div>
           <FormGroup>
             <FormBtn
               text="Submit"
               onClick={this.handleFormSubmit}
-              classes="btn-primary"
+              classes="btn-primary searchBtn"
               disabled={
                 this.state.whereFrom && this.state.whereTo && this.state.depDateIsValid && this.state.retDateIsValid ? "" : "disabled"
               }
@@ -449,7 +475,17 @@ class Search extends Component {
         {this.state.arrResultsPopulated && this.state.flightSearched && this.state.arrSelectIsValid === false ? (<ArrivalResults arrResults={this.state.arrResults} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo}  arrSelect={this.arrSelect}
         />) : (<h4>{this.state.arrResultsMessage}</h4>)}
 
-        {this.state.arrSelectIsValid && this.state.depSelectIsValid ? ("Trip added!") : (<div />)}
+        {this.state.arrSelectIsValid && this.state.depSelectIsValid ? (<Link
+              to="/trips"
+              className={
+                window.location.pathname === "/" || window.location.pathname === "/trips"
+                  ? "nav-link active"
+                  : "nav-link"
+              }
+            >
+              View Trips?
+            </Link>) : (<div />)}
+        </div>
         <Footer />
       </div>
     );

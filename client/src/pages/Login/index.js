@@ -44,25 +44,35 @@ class Login extends Component {
 
   render() {
     return (
-      <div className="container loginContainer">
-        <form>
+      <div className="container">
+        <div className="greeting">
+        <h3 className="greetingText">Hello, guest.</h3>
+        <h3 className="greetingText">Please sign in or register to access the site!</h3>
+        </div>
+        <form className="formBackground">
           <FormGroup>
-            <Label text="Username" />
+            <Label text="Username:" />
+            <div>
             <Input
               name="username"
               value={this.state.username}
               onChange={this.handleInputChange}
               type="text"
+              className="formInput"
             />
+            </div>
           </FormGroup>
           <FormGroup>
-            <Label text="Password" />
+            <Label text="Password:" />
+            <div>
             <Input
               name="password"
               value={this.state.password}
               onChange={this.handleInputChange}
               type="password"
+              className="formInput"
             />
+            </div>
           </FormGroup>
           {this.state.error ? <Small text={this.state.error} /> : ""}
           <FormBtn
@@ -73,7 +83,9 @@ class Login extends Component {
             onClick={this.login}
             classes="btn-primary"
           />
+          <div>
           <Link to="/register">Not registered? Click here.</Link>
+          </div>
         </form>
       </div>
     );
