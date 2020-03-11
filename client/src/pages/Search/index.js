@@ -85,7 +85,7 @@ class Search extends Component {
     from.query({"query": this.state.whereFrom})
     from.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key": "5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
+      "x-rapidapi-key": process.env.REACT_APP_NOT_SECRET_CODE
     });
     from.then(function (res) {
       if (res.error) throw new Error(res.error);
@@ -99,7 +99,7 @@ class Search extends Component {
     to.query({"query": this.state.whereTo})
     to.headers({
       "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-      "x-rapidapi-key":"5f49839056msh0904f5e8160aafap1c21f4jsn934d1f26815d"
+      "x-rapidapi-key": process.env.REACT_APP_NOT_SECRET_CODE
     });
     to.then(function (res) {
       if (res.error) throw new Error(res.error);
