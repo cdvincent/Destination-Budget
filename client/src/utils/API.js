@@ -37,7 +37,7 @@ export default {
   getBudget: function (username) {
     return axios.get("/api/budget/" + username)
   },
-  deleteBudget: function (username) {
-    return axios.delete("/api/budget/" + username);
+  deleteBudget: function (id) {
+    return axios.delete("/api/budget/" + id);
   }
 };

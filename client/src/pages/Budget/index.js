@@ -22,6 +22,7 @@ class Budget extends Component {
     creditCards: "",
     otherExpenses: "",
     income: "",
+    dataId: ""
   };
 
   handleInputChange = event => {
@@ -69,7 +70,8 @@ componentDidMount = () => {
     if (res.data.length > 0) {
       this.setState({
           budget: res.data,
-          budgetExists: true
+          budgetExists: true,
+          budgetId: res.data._id
       });
     } else {
       this.setState({budgetExists: false});
@@ -115,6 +117,7 @@ logout = () => {
 };
 
 deleteBudget = event => {
+  this.deleteToast();
   console.log(event.target.value);
   this.setState({budgetExists: false})
   API.deleteBudget(event.target.value)
@@ -122,7 +125,6 @@ deleteBudget = event => {
       console.log(res.data);
       API.getBudget(this.props.username);
   });
-  this.deleteToast();
 };
 
 deleteToast = () => {
@@ -207,7 +209,7 @@ render() {
               </tr>
               </tbody>
               </table>
-              <button className="btn btn-primary delete" onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button>
+              <button className="btn btn-primary delete" onClick={this.deleteBudget} value={this.state.budgetId}>Delete Budget</button>
             </div>
             ) : (
       <form>

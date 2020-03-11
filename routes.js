@@ -112,8 +112,8 @@ router.get("/api/budget/:username", function(req, res) {
   });
 });
 
-router.delete("/api/budget/:username", function(req, res) {
-  db.Budget.findOneAndDelete({username: req.params.username})
+router.delete("/api/budget/:id", function(req, res) {
+  db.Budget.findByIdAndRemove({_id: req.params.id})
   .then(function(budget) {
     res.json(budget);
   })
