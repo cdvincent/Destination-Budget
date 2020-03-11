@@ -21,7 +21,7 @@ class Trips extends Component {
         budget: [],
         budgetExists: false,
         tripPassed: false,
-        isAffordable: false
+        isAffordable: false,
     };
 
     componentDidMount() {
@@ -157,13 +157,12 @@ class Trips extends Component {
                 <ToastContainer />
                 <div className="container">
                     <h3>Here are you trips, {this.state.username}: </h3>
-                    <div className="results">
+                    <Hline />
                         { this.state.calculated && !this.state.tripPassed ? (<div>You must save an estimated average of ${this.state.recommendedSavings.toFixed(2)} per day to afford this trip.</div>
                        ) : ("")}
                        { this.state.calculated && this.state.tripPassed ? (<div>{this.state.message}</div>) : ("")}
                        { this.state.isAffordable && !this.state.tripPassed ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day.</div>) : ("")}
                        { !this.state.isAffordable && this.state.calculated ? (<div>You are able to save an average of ${this.state.dailyDispIncome.toFixed(2)} per day.</div>) : ("")}
-                       </div>
                     <ul className="list-group search-results allTrips">
                     {this.state.trips.map(result =>(
                         <li key={result._id} className="list-group-item tripDiv">
@@ -184,6 +183,7 @@ class Trips extends Component {
                     {this.state.trips.length > 0 ? ( <p></p> ) : (
                 <h3>You have no trips yet!</h3> )}
                 </div>
+                <Footer />
             </div>
         );
     };

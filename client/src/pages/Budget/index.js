@@ -50,6 +50,7 @@ pushBudget = (dispIncome, totalBudget) => {
   this.setState({
     budgetExists: true
   });
+  this.addToast();
   API.addBudget(budget).then( res => {
     if (res.data.username) {
       console.log(res);
@@ -58,7 +59,6 @@ pushBudget = (dispIncome, totalBudget) => {
       return false
     };
   });
-  this.addToast();
 };
 
 componentDidMount = () => {
