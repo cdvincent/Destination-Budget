@@ -71,7 +71,7 @@ componentDidMount = () => {
       this.setState({
           budget: res.data,
           budgetExists: true,
-          budgetId: res.data._id
+          budgetId: res.data[0]._id
       });
     } else {
       this.setState({budgetExists: false});
