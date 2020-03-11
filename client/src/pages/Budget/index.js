@@ -22,7 +22,6 @@ class Budget extends Component {
     creditCards: "",
     otherExpenses: "",
     income: "",
-    dataId: ""
   };
 
   handleInputChange = event => {
@@ -55,7 +54,7 @@ pushBudget = (dispIncome, totalBudget) => {
   API.addBudget(budget).then( res => {
     if (res.data.username) {
       console.log(res);
-      API.getBudget(this.state.username)
+      API.getBudget()
     } else {
       return false
     };
@@ -70,8 +69,7 @@ componentDidMount = () => {
     if (res.data.length > 0) {
       this.setState({
           budget: res.data,
-          budgetExists: true,
-          budgetId: res.data[0]._id
+          budgetExists: true
       });
     } else {
       this.setState({budgetExists: false});
@@ -108,8 +106,7 @@ console.log(dispIncome, totalBudget);
     otherExpenses: "",
     income: "",
     totalBudget: "",
-    dispIncome: "",
-    budgetId: ""
+    dispIncome: ""
   });
 };
 
@@ -118,15 +115,9 @@ logout = () => {
 };
 
 deleteBudget = event => {
-  this.deleteToast();
-  console.log(this.state.budget);
-  console.log(this.state.budgetId);
   console.log(event.target.value);
-  this.setState({
-    budgetExists: false,
-    budget: [],
-    budgetId: ""
-  })
+  this.deleteToast();
+  this.setState({budgetExists: false})
   API.deleteBudget(event.target.value)
   .then(res => {
       console.log(res.data);
@@ -216,7 +207,7 @@ render() {
               </tr>
               </tbody>
               </table>
-              <button className="btn btn-primary delete" onClick={this.deleteBudget} value={this.state.budgetId}>Delete Budget</button>
+              <button className="btn btn-primary delete" onClick={this.deleteBudget} value={this.state.username}>Delete Budget</button>
             </div>
             ) : (
       <form>
