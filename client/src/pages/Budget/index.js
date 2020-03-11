@@ -119,6 +119,8 @@ logout = () => {
 
 deleteBudget = event => {
   this.deleteToast();
+  console.log(budget);
+  console.log(budgetId);
   console.log(event.target.value);
   this.setState({
     budgetExists: false,
