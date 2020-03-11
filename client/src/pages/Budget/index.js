@@ -108,7 +108,8 @@ console.log(dispIncome, totalBudget);
     otherExpenses: "",
     income: "",
     totalBudget: "",
-    dispIncome: ""
+    dispIncome: "",
+    budgetId: ""
   });
 };
 
