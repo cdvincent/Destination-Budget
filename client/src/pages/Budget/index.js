@@ -55,7 +55,7 @@ pushBudget = (dispIncome, totalBudget) => {
   API.addBudget(budget).then( res => {
     if (res.data.username) {
       console.log(res);
-      API.getBudget()
+      API.getBudget(this.state.username)
     } else {
       return false
     };
@@ -120,7 +120,11 @@ logout = () => {
 deleteBudget = event => {
   this.deleteToast();
   console.log(event.target.value);
-  this.setState({budgetExists: false})
+  this.setState({
+    budgetExists: false,
+    budget: [],
+    budgetId: ""
+  })
   API.deleteBudget(event.target.value)
   .then(res => {
       console.log(res.data);
