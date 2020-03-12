@@ -54,7 +54,7 @@ pushBudget = (dispIncome, totalBudget) => {
   API.addBudget(budget).then( res => {
     if (res.data.username) {
       console.log(res);
-      API.getBudget()
+      this.getBudget(this.props.username)
     } else {
       return false
     };
@@ -63,6 +63,10 @@ pushBudget = (dispIncome, totalBudget) => {
 
 componentDidMount = () => {
   this.setState({username: this.props.username});
+  this.getBudget();
+};
+
+getBudget = () => {
   API.getBudget(this.props.username)
   .then(res => {
     console.log(res.data)
@@ -76,7 +80,7 @@ componentDidMount = () => {
       console.log("No budget found");
     }
   });
-};
+}
 
 handleFormSubmit = event => {
   let totalBudget = parseInt(this.state.rent) +
