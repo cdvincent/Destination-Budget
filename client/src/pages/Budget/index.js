@@ -53,7 +53,6 @@ pushBudget = (dispIncome, totalBudget) => {
   this.addToast();
   API.addBudget(budget).then( res => {
     if (res.data.username) {
-      console.log(res);
       this.getBudget(this.props.username)
     } else {
       return false
@@ -69,7 +68,6 @@ componentDidMount = () => {
 getBudget = () => {
   API.getBudget(this.props.username)
   .then(res => {
-    console.log(res.data)
     if (res.data.length > 0) {
       this.setState({
           budget: res.data,
@@ -77,7 +75,6 @@ getBudget = () => {
       });
     } else {
       this.setState({budgetExists: false});
-      console.log("No budget found");
     }
   });
 }
@@ -93,10 +90,7 @@ handleFormSubmit = event => {
   parseInt(this.state.otherExpenses);
 
   let income = parseInt(this.state.income);
-  console.log(income)
-  console.log(totalBudget);
   let dispIncome = income - totalBudget;
-console.log(dispIncome, totalBudget);
   event.preventDefault();
   this.pushBudget(dispIncome, totalBudget);
   this.setState({
@@ -119,12 +113,10 @@ logout = () => {
 };
 
 deleteBudget = event => {
-  console.log(event.target.value);
   this.deleteToast();
   this.setState({budgetExists: false})
   API.deleteBudget(event.target.value)
   .then(res => {
-      console.log(res.data);
       API.getBudget(this.props.username);
   });
 };

@@ -41,7 +41,6 @@ body {
 .titleBackground {
     background: rgb(65, 65, 65);
     background: rgba(65, 65, 65, 0.5);
-    height: 200px;
     margin: 100px auto;
     padding: 50px;
     border-radius: 5px;

@@ -7,6 +7,7 @@ import API from "../../utils/API";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import Hline from "../../components/Hline/Hline";
+import { Link } from "react-router-dom";
 import "./style.css";
 
 class Trips extends Component {
@@ -47,13 +48,11 @@ class Trips extends Component {
     fetchBudget = () => {
         API.getBudget(this.props.username)
         .then(res => {
-            console.log(res.data)
             if (res.data) {
             this.setState({
                 budget: res.data,
                 budgetExists: true
             });
-            console.log(this.state.budget);
             } else {
             console.log("No budget found");
             }
@@ -66,7 +65,6 @@ class Trips extends Component {
             this.setState({
                 trips: res.data
             });
-            console.log(res.data);
         });
     };
 
@@ -120,10 +118,8 @@ class Trips extends Component {
     };
 
     deleteTrip = event => {
-        console.log(event.target.value);
         API.deleteTrip(event.target.value)
         .then(res => {
-            console.log(res.data);
             this.deleteToast();
             this.fetchTrips();
         });
@@ -181,7 +177,19 @@ class Trips extends Component {
                     ))}
                     </ul>
                     {this.state.trips.length > 0 ? ( <p></p> ) : (
-                <h3>You have no trips yet!</h3> )}
+                    <div>
+                        <h3>You have no trips yet!</h3>
+                        <Link
+                    to="/search"
+                    className={
+                        window.location.pathname === "/" || window.location.pathname === "/search"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    >
+                    Search for a trip!
+                    </Link>
+                </div> )}
                 </div>
                 <Footer />
             </div>

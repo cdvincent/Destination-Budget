@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { FormGroup, FormBtn, Input, Label } from "../../components/Form/Form";
+import { FormGroup, FormBtn, Input, Label, Small } from "../../components/Form/Form";
 import DepartureResults from "../../components/DepartureResults";
 import ArrivalResults from "../../components/ArrivalResults";
 import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Footer/Footer";  
 import API from "../../utils/API";
 import Calendar from "react-calendar";
 import OutboundCityResults from "../../components/OutboundCityResults/OutboundCityResults";
@@ -117,7 +117,6 @@ class Search extends Component {
       fromIsSelected: true,
       toIsSelected: false
     }, () => this.searchReady());
-    console.log(event.target.value);
   };
 
   formatWhereTo = event => {
@@ -126,7 +125,6 @@ class Search extends Component {
       toIsFormatted: true,
       toIsSelected: true
     }, () => this.searchReady());
-    console.log(event.target.value);
   };
 
   searchReady = () => {
@@ -148,15 +146,12 @@ class Search extends Component {
       depDate: this.state.depDate,
       error: ""
     };
-    console.log(userSearch);
     
     let queryURL = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/" + this.state.formattedWhereFrom + "/" + this.state.formattedWhereTo + "/" + this.state.depDate + "/"
 
-    console.log(queryURL);
 
     API.skyScanner(queryURL)
     .then(res => {
-      console.log(res.body.Quotes);
       if (res.body.Quotes === undefined) {
         this.setState({ depResultsMessage: "No outbound flights found for today's date. Please search again." })
       }
@@ -190,15 +185,12 @@ class Search extends Component {
       retDate: this.state.retDate,
       error: ""
     };
-    console.log(userSearch);
     
     let queryURL = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/" + this.state.formattedWhereTo + "/" + this.state.formattedWhereFrom + "/" + this.state.retDate + "/";
 
-    console.log(queryURL);
 
     API.skyScanner(queryURL)
     .then(res => {
-      console.log(res.body.Quotes);
       if (res.body.Quotes === undefined) {
         this.setState({ arrResultsMessage: "No inbound flights found for today's date. Please search again." })
       }
@@ -220,7 +212,6 @@ class Search extends Component {
   };
 
   depSelect = event => {
-    console.log(event.target.value);
     this.setState({ 
       totalCost: this.state.totalCost  += (parseInt(event.target.value) * this.state.quantity),
       depSelectIsValid: true
@@ -228,7 +219,6 @@ class Search extends Component {
   };
 
   arrSelect = event => {
-    console.log(event.target.value);
     this.setState({
       totalCost: this.state.totalCost += (parseInt(event.target.value) * this.state.quantity),
       arrSelectIsValid: true
@@ -250,12 +240,10 @@ class Search extends Component {
       travelDate: this.state.depDate,
       quantity: this.state.quantity
     }
-    console.log(currentTrip.quantity);
     this.setState({ 
       whereFrom: "",
       whereTo: ""
     });
-    console.log(currentTrip);
     API.addTrip(currentTrip).then( res => {
       console.log(res);
     });
@@ -465,16 +453,16 @@ class Search extends Component {
         </form>
 
         {this.state.citySearched && this.state.fromIsSelected === false ? (<OutboundCityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
-        />) : (<h2 className="resultsPlaceholder">{this.state.message}</h2>)}
+        />) : (<Small className="resultsPlaceholder" text={this.state.message} />)}
 
         {this.state.citySearched && this.state.toIsSelected === false ? (<InboundCityResults formatWhereFrom={this.formatWhereFrom} formatWhereTo={this.formatWhereTo} toResults={this.state.cityToResults} fromResults={this.state.cityFromResults} 
         />) : (<p className="resultsPlaceholder"></p>)}
 
         {this.state.depResultsPopulated && this.state.flightSearched && this.state.depSelectIsValid === false ? (<DepartureResults depResults={this.state.depResults} depDate={this.state.depDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo} depSelect={this.depSelect} 
-        />) : (<h4>{this.state.depResultsMessage}</h4>)}
+        />) : (<Small text={this.state.depResultsMessage}/>)}
 
         {this.state.arrResultsPopulated && this.state.flightSearched && this.state.arrSelectIsValid === false ? (<ArrivalResults arrResults={this.state.arrResults} retDate={this.state.retDate} whereFrom={this.state.formattedWhereFrom} whereTo={this.state.formattedWhereTo}  arrSelect={this.arrSelect}
-        />) : (<h4>{this.state.arrResultsMessage}</h4>)}
+        />) : (<Small text={this.state.arrResultsMessage} />)}
 
         {this.state.arrSelectIsValid && this.state.depSelectIsValid ? (<Link
               to="/trips"
