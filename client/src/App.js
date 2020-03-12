@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
+  Switch,
   Route,
   Redirect
 } from "react-router-dom";
@@ -62,6 +63,7 @@ class App extends Component {
     return (
       <Router>
         {this.state.display ? (<div>
+          <Switch>
             <Route exact path="/login">
               {this.state.authorized ? (
                 <Redirect to="/trips" />
@@ -106,6 +108,8 @@ class App extends Component {
                 <Home component={Home} />
               )}
             </Route>
+            <Route component={Home} />
+            </Switch>
         </div>) : "" }
         
       </Router>
