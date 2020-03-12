@@ -108,7 +108,13 @@ class App extends Component {
                 <Home component={Home} />
               )}
             </Route>
-            <Route component={Home} />
+            <Route path="*">
+            {this.state.authorized ? (
+                <Redirect to="/trips" />
+              ) : (
+                <Home component={Home} />
+              )}
+              </Route>
             </Switch>
         </div>) : "" }
         
